@@ -5,10 +5,10 @@ use serde::{Deserialize, Serialize};
 
 /*
 create table users(
-	id int generated always as identity primary key,
-	name varchar(255),
-	email varchar(255),
-	phone varchar(50)
+    id int generated always as identity primary key,
+    name varchar(255),
+    email varchar(255),
+    phone varchar(50)
 );
 */
 
