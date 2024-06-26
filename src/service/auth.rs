@@ -1,12 +1,18 @@
 use crate::error::Error;
 use actix_identity::Identity;
 use actix_web::{web, HttpResponse};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 struct Login {
     username: String,
     password: String,
+}
+
+#[derive(Deserialize, Serialize)]
+struct LoginResult {
+    status: String,
+    message: String,
 }
 
 async fn login(
@@ -17,9 +23,18 @@ async fn login(
     let Login { username, password } = serde_json::from_slice::<Login>(&body)?;
     if username == "username" && password == "password" {
         id.remember(username.to_owned());
-        Ok(HttpResponse::Ok().json("Login Başarılı"))
+        let status = LoginResult {
+            status: "ok".into(),
+            message: "Login Başarılı".into(),
+        };
+
+        Ok(HttpResponse::Ok().json(status))
     } else {
-        Ok(HttpResponse::Ok().json("Kullanıcı Bilgileri Hatalı !"))
+        let status = LoginResult {
+            status: "err".into(),
+            message: "Kullanıcı Bilgileri Hatalı !".into(),
+        };
+        Ok(HttpResponse::Ok().json(status))
     }
 }
 
