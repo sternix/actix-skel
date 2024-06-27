@@ -26,7 +26,7 @@ async fn main() -> std::io::Result<()> {
                     .name("auth-cookie")
                     .secure(false),
             ))
-            .service(actix_files::Files::new("/static", "static").show_files_listing())
+            .service(actix_files::Files::new("/", "static").index_file("index.html"))
             .configure(service::init)
     })
     .bind("0.0.0.0:8080")?
