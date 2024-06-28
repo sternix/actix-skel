@@ -4,6 +4,7 @@ mod jresult;
 mod service;
 
 use actix_cors::Cors;
+use actix_files::NamedFile;
 use actix_identity::{CookieIdentityPolicy, IdentityService};
 use actix_web::{web, App, HttpServer};
 use rand::Rng;
@@ -26,10 +27,19 @@ async fn main() -> std::io::Result<()> {
                     .name("auth-cookie")
                     .secure(false),
             ))
-            .service(actix_files::Files::new("/", "static").index_file("index.html"))
+            // *** sıra önemli ***
+            // önce web service
+            // sonra svelte
+            // en son catch all
             .configure(service::init)
+            .service(actix_files::Files::new("/", "static").index_file("index.html"))
+            .default_service(web::to(catch_all))
     })
     .bind("0.0.0.0:8080")?
     .run()
     .await
+}
+
+async fn catch_all() -> actix_web::Result<NamedFile> {
+    Ok(NamedFile::open("static/index.html")?)
 }
